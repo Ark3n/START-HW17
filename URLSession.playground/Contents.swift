@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 let urlString = "https://v2.jokeapi.dev/joke/Programming"
 
@@ -17,4 +18,20 @@ func getData(urlRequest: String) {
     }.resume()
 }
 
-getData(urlRequest: urlString)
+
+// MARK: - Task with Star
+let publicKey = "875ac65d365dc4bf882349b6946bcb76"
+let privateKey = "720643086da2de79d997e5286b65e74488baa2db"
+let ts = Date().timeIntervalSince1970.description
+let hash = MD5(string: ts + privateKey + publicKey)
+let marvelUrl = "https://gateway.marvel.com/v1/public/comics/10223?ts=" + ts + "&apikey=" + publicKey + "&hash=" + hash
+
+
+// MARK: - func to create md5 hash
+func MD5(string: String) -> String {
+    let digest = Insecure.MD5.hash(data: Data(string.utf8))
+    return digest.map {
+        String(format: "%02hhx", $0)
+    }.joined()
+}
+ getData(urlRequest: marvelUrl)
